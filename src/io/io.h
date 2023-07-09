@@ -2,4 +2,4 @@
 
 #include <string>
 
-std::string* input(const char* prompt);
+std::string input(const char* prompt);
