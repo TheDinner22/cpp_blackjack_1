@@ -133,6 +133,3 @@ void Player::add_card(const Card& new_card){
     m_card_c++;
 }
 
-std::array<Card, 52> make_unshuffled_deck(){
-    //
-}
