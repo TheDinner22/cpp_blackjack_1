@@ -1,6 +1,8 @@
+#include <algorithm>
 #include <array>
 #include <exception>
 #include <string>
+#include <iostream>
 #include "player.h"
 
 const char* suit_to_string(Suit s){
@@ -52,7 +54,7 @@ const char* card_val_to_string(int v){
 }
 
 // ace of diamonds by default
-Card::Card() : m_suit(DIAMONDS), m_value(1) {}
+Card::Card() : m_suit(DIAMONDS), m_value(1), m_name("ace of diamonds") {}
 
 Card::Card(int value, Suit suit){
     if (value < 1 || value > 13) {
@@ -61,30 +63,45 @@ Card::Card(int value, Suit suit){
 
     m_value = value;
     m_suit = suit;
-}
 
-// you need to delete the pointer you get once you are done with it!
-std::string* Card::name(){
+    // what is its name?
     const char* card_name = card_val_to_string(m_value);
     const char* card_suit = suit_to_string(m_suit);
 
-    std::string* card_title = new std::string(card_name);
-    *card_title += " of ";
-    *card_title += card_suit;
-
-    return card_title;
+    // build the name and assign to m_name
+    std::string card_title = std::string(card_name);
+    card_title += " of ";
+    card_title += card_suit;
+    m_name = card_title;
 }
 
-int Card::value(){
+// you need to delete the pointer you get once you are done with it!
+const std::string& Card::name() const {
+    return m_name;
+}
+
+int Card::value() const {
     return m_value;
 }
 
 int Player::card_total() const {
     int total = 0;
     for (int i = 0; i < m_card_c; i++) {
-        total += (m_card_v + i)->value();
+        total += std::min( (m_card_v + i)->value(), 10 );
     }
     return total;
+}
+
+void Player::print_hand() const {
+    if (m_card_c == 0){
+        std::cout << "no cards in hand!" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < m_card_c; i++) {
+        const std::string& card_name = (m_card_v + i)->name();
+        std::cout << card_name << std::endl;
+    }
 }
 
 void Player::reset_hand(){
@@ -110,22 +127,12 @@ void Player::add_card(const Card& new_card){
     
     // free old mem
     delete [] m_card_v;
-    m_card_v = nullptr;
-    
+    m_card_v = new_cards; // set to new mem
+
     // update card_c
     m_card_c++;
 }
 
-// you are responsible for this array pointer pointer
-std::array<Card, 52>* make_unshuffled_deck(){
-    std::array<Card, 52>* deck = new std::array<Card, 52>;
-
-    Suit all[4] = {DIAMONDS, HEARTS, CLUBS, SPADES};
-    for (int i = 0; i < 4; i++) {
-        Suit s = all[i];
-        for (int j = 1; j < 14; j++) {
-             (*deck)[j*(i+1)] = Card(j, s);
-        }
-    }
-    return deck;
+std::array<Card, 52> make_unshuffled_deck(){
+    //
 }
