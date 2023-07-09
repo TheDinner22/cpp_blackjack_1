@@ -3,6 +3,16 @@
 #include <string>
 #include "io/io.h"
 #include "player/player.h"
+#include "deck/deck.h"
+
+void test_deck() {
+    Deck d;
+
+    std::cout << d.draw_card().name() << std::endl;
+    std::cout << d.draw_card().name() << std::endl;
+    std::cout << d.draw_card().name() << std::endl;
+
+}
 
 void test_input() {
     std::string a = input("enter ur name:");
@@ -34,5 +44,7 @@ int main(){
 
     // test_card_name();
 
-    test_player_creation();
+    // test_player_creation();
+
+    test_deck();
 }

@@ -1,3 +1,6 @@
+#include <set>
+#include <vector>
+#include <iostream>
 #include "./deck.h"
 
 const char* suit_to_string(Suit s){
@@ -70,7 +73,6 @@ Card::Card(int value, Suit suit){
     m_name = card_title;
 }
 
-// you need to delete the pointer you get once you are done with it!
 const std::string& Card::name() const {
     return m_name;
 }
@@ -78,3 +80,55 @@ const std::string& Card::name() const {
 int Card::value() const {
     return m_value;
 }
+
+std::vector<Card> Deck::generate_cards(){
+    std::vector<Card> deck;
+    const int NUMBER_OF_SUITS = 4;
+    const int NUMBER_OF_CARDS = 13;
+    Suit all_suits[NUMBER_OF_SUITS] = {DIAMONDS, HEARTS, CLUBS, SPADES};
+    for (int i = 0; i < NUMBER_OF_SUITS; i++) {
+        for (int j = 0; j < NUMBER_OF_CARDS; j++) {
+            deck.push_back(Card(j+1, all_suits[i]));
+        }
+    }
+
+    return deck;
+}
+
+// https://www.digitalocean.com/community/tutorials/random-number-generator-c-plus-plus
+int Deck::generate_random_number(){
+    return rand() % m_deck.size();
+}
+
+void Deck::reset(){
+    // reset vec
+    m_deck.clear();
+    m_deck = generate_cards();
+    // reset set
+    m_used_cards.clear();
+}
+
+const Card& Deck::draw_card(){
+    // getting a random number which has not yet been
+    // used
+    int card_index;
+    while (true) {
+        int possible_random = generate_random_number();
+        const bool contains = m_used_cards.find(possible_random) != m_used_cards.end();
+        if (!contains) {
+            card_index = possible_random;
+            break;
+        }
+    }
+
+    m_used_cards.insert(card_index);
+    return m_deck[card_index];
+}
+
+// for debugging
+void Deck::print() const {
+    for (int i = 0; i < 52; i++) {
+        std::cout << m_deck[i].name() << std::endl;
+    }
+}
+
