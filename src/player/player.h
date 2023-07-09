@@ -2,25 +2,7 @@
 
 #include <array>
 #include <string>
-
-enum Suit {
-    DIAMONDS, HEARTS, SPADES, CLUBS
-};
-
-class Card {
-private:
-    Suit m_suit;
-    int m_value; // could be an enum but I dont care
-    std::string m_name;
-public:
-    // ace of diamonds by default
-    Card();
-    Card(int value, Suit suit);
-
-    const std::string& name() const;
-
-    int value() const;
-};
+#include "../deck/deck.h"
 
 class Player {
 private:
@@ -44,6 +26,4 @@ public:
     // this class will handle the card
     void add_card(const Card& new_card);
 };
-
-std::array<Card, 52> make_unshuffled_deck();
 
