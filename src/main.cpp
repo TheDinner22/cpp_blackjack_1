@@ -56,7 +56,7 @@ int main(){
     // make players
     std::vector<Player> players;
     for (int i = 0; i < number_of_players; i++) {
-        std::cout << "what is player " << i+1 << "s name?" << std::endl;
+        std::cout << "what is player " << i+1 << "'s name?" << std::endl;
         std::string name = input("");
         players.push_back(Player(name));
     }
@@ -66,20 +66,63 @@ int main(){
 
     while (true) {
         // deal everyone their cards, starting with the dealer
-        const Card& dealers_shown_card = deck.draw_card();
-        const Card& dealers_hidden_card = deck.draw_card();
-        std::cout << "the dealer is showing a " << dealers_shown_card.name() << std::endl;
+        Player dealer = Player("dealer");
+        const Card& card1 = deck.draw_card();
+        std::cout << "the dealer is showing a " << card1.name() << std::endl;
+        dealer.add_card(card1);
+        dealer.add_card(deck.draw_card());
 
         for (int i = 0; i < number_of_players; i++) {
             const Card& card1 = deck.draw_card();
             const Card& card2 = deck.draw_card();
             players[i].add_card(card1);
             players[i].add_card(card2);
+        }
+
+        // players turns WIP
+        for (int i = 0; i < number_of_players; i++) {
+            std::cout << "it is " << players[i].name() << "'s turn" << std::endl;
+            std::cout << "here is your hand" << std::endl;
             players[i].print_hand();
+            std::string user_input = input("hit or stand (h/s)?");
+            if (user_input == "hit" || user_input == "h") {
+                std::cout << "you hit" << std::endl;
+            }
+            else if (user_input == "stand" || user_input == "s") {
+                std::cout << "you stand" << std::endl;
+            }
+            else {
+                std::cout << "invalid choice" << std::endl;
+                return 1;
+            }
+        }
+
+        // dealers turn
+        std::cout << std::endl << "-----------------dealers turn-----------------" << std::endl << std::endl;
+        while (true) {
+            if (dealer.card_total() > 21) {
+                std::cout << "the dealer is bust!" << std::endl;
+                break;
+            }
+            std::cout << "dealer has a total of " << dealer.card_total() << std::endl;
+            // hit
+            if (dealer.card_total() < 17) {
+                const Card& new_card = deck.draw_card();
+                std::cout << "the dealer hits on " << dealer.card_total() << "!" << std::endl;
+                std::cout << "the dealer draws a " << new_card.name() << "!" << std::endl;
+                dealer.add_card(new_card);
+            }
+            // stand
+            else {
+                std::cout << "the dealer stands on " << dealer.card_total() << std::endl;
+                break;
+            }
         }
 
         // end of turn reset deck and player hands
+        // and dealers hand
         deck.reset();
+        dealer.reset_hand();
         for (int i = 0; i < number_of_players; i++) {
             players[i].reset_hand();
         }

@@ -6,7 +6,7 @@
 
 class Player {
 private:
-    std::string m_name; // kill when done
+    std::string m_name;
     Card* m_card_v; // kill when done
     int m_card_c;
     int m_money;
@@ -18,6 +18,8 @@ public:
     }
 
     int card_total() const; 
+
+    const std::string& name() const;
 
     void reset_hand();
 

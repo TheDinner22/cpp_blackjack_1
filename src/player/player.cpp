@@ -26,6 +26,10 @@ void Player::print_hand() const {
     }
 }
 
+const std::string& Player::name() const {
+    return m_name;
+}
+
 void Player::reset_hand(){
     m_card_c = 0;
     // free the memory!
